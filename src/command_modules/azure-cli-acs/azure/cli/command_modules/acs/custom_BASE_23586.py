@@ -2243,8 +2243,7 @@ def _ensure_osa_aad(cli_ctx,
                     aad_client_app_secret=None,
                     aad_tenant_id=None,
                     identifier=None,
-                    name=None, update=False,
-                    customer_admin_group_id=None):
+                    name=None, update=False):
     rbac_client = get_graph_rbac_management_client(cli_ctx)
     if not aad_client_app_id:
         if not aad_client_app_secret and update:
@@ -2254,19 +2253,9 @@ def _ensure_osa_aad(cli_ctx,
         # Delegate Sign In and Read User Profile permissions on Windows Azure Active Directory API
         resource_access = ResourceAccess(id="311a71cc-e848-46a1-bdf8-97ff7156d8e6",
                                          additional_properties=None, type="Scope")
-        
         required_osa_aad_access = RequiredResourceAccess(resource_access=[resource_access],
                                                          additional_properties=None,
                                                          resource_app_id="00000002-0000-0000-c000-000000000000")
-        
-        # If customer admin is being used also make sure the app add Read directory permission on Windws Azure Active Directory API
-        if customer_admin_group_id != None: 
-            directory_access = ResourceAccess(id="5778995a-e1bf-45b8-affa-663a9f3f4d04",
-                                         additional_properties=None, type="Scope")
-            required_osa_aad_access = RequiredResourceAccess(resource_access=[resource_access, directory_access],
-                                                         additional_properties=None,
-                                                         resource_app_id="00000002-0000-0000-c000-000000000000")
-        
         list_aad_filtered = list(rbac_client.applications.list(filter="identifierUris/any(s:s eq '{}')"
                                                                .format(reply_url)))
         if update:
@@ -2302,8 +2291,7 @@ def _ensure_osa_aad(cli_ctx,
         client_id=aad_client_app_id,
         secret=aad_client_app_secret,
         tenant_id=aad_tenant_id,
-        kind='AADIdentityProvider',
-        customer_admin_group_id=customer_admin_group_id)
+        kind='AADIdentityProvider')
 
 
 def _ensure_service_principal(cli_ctx,
@@ -2495,8 +2483,7 @@ def openshift_create(cmd, client, resource_group_name, name,  # pylint: disable=
                      subnet_prefix="10.0.0.0/24",
                      vnet_peer=None,
                      tags=None,
-                     no_wait=False,
-                     customer_admin_group_id=None):
+                     no_wait=False):
 
     if location is None:
         location = _get_rg_location(cmd.cli_ctx, resource_group_name)
@@ -2541,8 +2528,7 @@ def openshift_create(cmd, client, resource_group_name, name,  # pylint: disable=
                                        aad_client_app_id=aad_client_app_id,
                                        aad_client_app_secret=aad_client_app_secret,
                                        aad_tenant_id=aad_tenant_id, identifier=fqdn,
-                                       name=name, update=update_aad_secret,
-                                       customer_admin_group_id=customer_admin_group_id)
+                                       name=name, update=update_aad_secret)
     identity_providers.append(
         OpenShiftManagedClusterIdentityProvider(
             name='Azure AD',

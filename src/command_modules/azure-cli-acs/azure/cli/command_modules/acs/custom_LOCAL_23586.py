@@ -2254,19 +2254,9 @@ def _ensure_osa_aad(cli_ctx,
         # Delegate Sign In and Read User Profile permissions on Windows Azure Active Directory API
         resource_access = ResourceAccess(id="311a71cc-e848-46a1-bdf8-97ff7156d8e6",
                                          additional_properties=None, type="Scope")
-        
         required_osa_aad_access = RequiredResourceAccess(resource_access=[resource_access],
                                                          additional_properties=None,
                                                          resource_app_id="00000002-0000-0000-c000-000000000000")
-        
-        # If customer admin is being used also make sure the app add Read directory permission on Windws Azure Active Directory API
-        if customer_admin_group_id != None: 
-            directory_access = ResourceAccess(id="5778995a-e1bf-45b8-affa-663a9f3f4d04",
-                                         additional_properties=None, type="Scope")
-            required_osa_aad_access = RequiredResourceAccess(resource_access=[resource_access, directory_access],
-                                                         additional_properties=None,
-                                                         resource_app_id="00000002-0000-0000-c000-000000000000")
-        
         list_aad_filtered = list(rbac_client.applications.list(filter="identifierUris/any(s:s eq '{}')"
                                                                .format(reply_url)))
         if update:
@@ -2543,6 +2533,8 @@ def openshift_create(cmd, client, resource_group_name, name,  # pylint: disable=
                                        aad_tenant_id=aad_tenant_id, identifier=fqdn,
                                        name=name, update=update_aad_secret,
                                        customer_admin_group_id=customer_admin_group_id)
+    if customer_admin_group_id is not None:
+        osa_aad_identity.customer_admin_group_id = customer_admin_group_id
     identity_providers.append(
         OpenShiftManagedClusterIdentityProvider(
             name='Azure AD',
