@@ -2254,7 +2254,7 @@ def _ensure_osa_aad(cli_ctx,
         # Delegate Sign In and Read User Profile permissions on Windows Azure Active Directory API
         resource_access = ResourceAccess(id="311a71cc-e848-46a1-bdf8-97ff7156d8e6",
                                          additional_properties=None, type="Scope")
-        # Read directory permission on Windws Azure Active Directory API
+        # Read directory permissions on Windows Azure Active Directory API
         directory_access = ResourceAccess(id="5778995a-e1bf-45b8-affa-663a9f3f4d04",
                                          additional_properties=None, type="Scope")
         
